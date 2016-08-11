@@ -1,21 +1,20 @@
-require "graph"
+require "rgl/adjacency"
 require_relative "tweet_parser"
 
-
-graph = Graph.new
+graph = RGL::AdjacencyGraph.new
 
 tweet_data = TweetParser.new(ARGV[0])
 
 tweet_data.users.each do |user| 
-  Node.new(graph, user)
+  graph.add_vertex(user)
 end
 
 tweet_data.mentions.each do |author, recipients|
-  from = graph.node(author)
+  from = author
   recipients.each do |recipient|
-    to = graph.node(recipient)
-    Edge.new(graph, from, to)
+    to = recipient
+    graph.add_edge(from, to)
   end
 end
 
-graph.to_s
+p graph.to_s
